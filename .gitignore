@@ -1,0 +1,19 @@
+# Binaries
+server
+server.exe
+main
+main.exe
+
+# Dependencies
+vendor/
+go.sum
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+
+# IDE
+.vscode/
+.idea/

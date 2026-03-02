@@ -1,0 +1,70 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Go TDD Server API",
+    "version": "1.1.0",
+    "description": "Professional Go API with TDD, Clean Architecture and K8s readiness."
+  },
+  "paths": {
+    "/healthz": {
+      "get": {
+        "summary": "Liveness probe",
+        "responses": {
+          "200": { "description": "Server is alive" }
+        }
+      }
+    },
+    "/readyz": {
+      "get": {
+        "summary": "Readiness probe",
+        "responses": {
+          "200": { "description": "Server is ready to handle traffic" }
+        }
+      }
+    },
+    "/api/v1/ping": {
+      "get": {
+        "summary": "Health check",
+        "responses": {
+          "200": { "description": "Returns pong" }
+        }
+      }
+    },
+    "/api/v1/add": {
+      "get": {
+        "summary": "Sum of two numbers",
+        "parameters": [
+          { "name": "a", "in": "query", "required": true, "schema": { "type": "integer" } },
+          { "name": "b", "in": "query", "required": true, "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "200": { "description": "Sum result" },
+          "400": { "description": "Invalid input" }
+        }
+      }
+    },
+    "/api/v1/echo": {
+      "post": {
+        "summary": "Echoes back the message",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": { "type": "string", "minLength": 1, "maxLength": 100 }
+                },
+                "required": ["message"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Success response" },
+          "400": { "description": "Validation error or invalid JSON" }
+        }
+      }
+    }
+  }
+}
