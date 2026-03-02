@@ -20,7 +20,7 @@ A production-ready Go server boilerplate built with **Echo**, focusing on **Clea
 ### Local Development
 1. **Clone the repository:**
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/dobkevich/go-tdd-server.git
    cd go-tdd-server
    ```
 2. **Run tests (mandatory):**
