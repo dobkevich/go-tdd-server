@@ -1,6 +1,6 @@
 module github.com/project/go-tdd-server
 
-go 1.24
+go 1.25.0
 
 require (
 	github.com/go-playground/validator/v10 v10.30.1
