@@ -10,9 +10,9 @@ import (
 )
 
 type Handler struct {
+	StartTime time.Time
 	AppSvc    service.AppService
 	Version   string
-	StartTime time.Time
 }
 
 func NewHandler(appSvc service.AppService, version string) *Handler {

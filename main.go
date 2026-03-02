@@ -1,8 +1,6 @@
 package main
 
 import (
-	"github.com/project/go-tdd-server/internal/handlers"
-	"github.com/project/go-tdd-server/internal/service"
 	"context"
 	"embed"
 	"log/slog"
@@ -15,6 +13,8 @@ import (
 	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"github.com/project/go-tdd-server/internal/handlers"
+	"github.com/project/go-tdd-server/internal/service"
 	_ "go.uber.org/automaxprocs"
 )
 
@@ -85,7 +85,19 @@ func SetupRouter() *echo.Echo {
 	e.Validator = &CustomValidator{validator: validator.New()}
 
 	e.Use(middleware.Recover())
-	e.Use(middleware.Logger())
+
+	// Use modern RequestLogger to satisfy linters
+	e.Use(middleware.RequestLoggerWithConfig(middleware.RequestLoggerConfig{
+		LogStatus: true,
+		LogURI:    true,
+		LogValuesFunc: func(c echo.Context, v middleware.RequestLoggerValues) error {
+			slog.Info("request",
+				"status", v.Status,
+				"uri", v.URI,
+			)
+			return nil
+		},
+	}))
 
 	appSvc := service.NewAppService()
 	h := handlers.NewHandler(appSvc, appVersion)

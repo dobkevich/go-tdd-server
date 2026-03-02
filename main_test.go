@@ -1,7 +1,6 @@
 package main
 
 import (
-	"github.com/project/go-tdd-server/internal/models"
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
@@ -9,20 +8,22 @@ import (
 	"testing"
 
 	"github.com/labstack/echo/v4"
+	"github.com/project/go-tdd-server/internal/models"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestHealth(t *testing.T) {
 	e := SetupRouter()
-	
+
 	t.Run("Healthz", func(t *testing.T) {
 		req := httptest.NewRequest(http.MethodGet, "/healthz", nil)
 		rec := httptest.NewRecorder()
 		e.ServeHTTP(rec, req)
 		assert.Equal(t, http.StatusOK, rec.Code)
-		
+
 		var res models.HealthResponse
-		json.Unmarshal(rec.Body.Bytes(), &res)
+		err := json.Unmarshal(rec.Body.Bytes(), &res)
+		assert.NoError(t, err)
 		assert.Equal(t, "ok", res.Status)
 		assert.NotEmpty(t, res.Timestamp)
 		assert.NotEmpty(t, res.Uptime)
@@ -33,16 +34,17 @@ func TestHealth(t *testing.T) {
 		rec := httptest.NewRecorder()
 		e.ServeHTTP(rec, req)
 		assert.Equal(t, http.StatusOK, rec.Code)
-		
+
 		var res models.HealthResponse
-		json.Unmarshal(rec.Body.Bytes(), &res)
+		err := json.Unmarshal(rec.Body.Bytes(), &res)
+		assert.NoError(t, err)
 		assert.Equal(t, "ready", res.Status)
 	})
 }
 
 func TestV1Endpoints(t *testing.T) {
 	e := SetupRouter()
-	
+
 	t.Run("Ping", func(t *testing.T) {
 		req := httptest.NewRequest(http.MethodGet, "/api/v1/ping", nil)
 		rec := httptest.NewRecorder()
@@ -71,7 +73,8 @@ func TestV1Endpoints(t *testing.T) {
 
 				if tt.expectedStatus == http.StatusOK {
 					var res models.AddResponse
-					json.Unmarshal(rec.Body.Bytes(), &res)
+					err := json.Unmarshal(rec.Body.Bytes(), &res)
+					assert.NoError(t, err)
 					assert.Equal(t, tt.expectedResult, res.Result)
 				}
 			})
@@ -82,32 +85,32 @@ func TestV1Endpoints(t *testing.T) {
 		tests := []struct {
 			name           string
 			payload        string
-			expectedStatus int
 			expectedMsg    string
+			expectedStatus int
 		}{
 			{
 				"Success",
 				`{"message": "Hello TDD!"}`,
-				http.StatusOK,
 				"Hello TDD!",
+				http.StatusOK,
 			},
 			{
 				"Validation Empty",
 				`{"message": ""}`,
-				http.StatusBadRequest,
 				"",
+				http.StatusBadRequest,
 			},
 			{
 				"Validation Too Long",
 				`{"message": "This message is definitely longer than one hundred characters, which is the maximum limit we have set for our validation rules in the model structure."}`,
-				http.StatusBadRequest,
 				"",
+				http.StatusBadRequest,
 			},
 			{
 				"Invalid JSON",
 				`{"message": "unclosed json}`,
-				http.StatusBadRequest,
 				"",
+				http.StatusBadRequest,
 			},
 		}
 
@@ -122,7 +125,8 @@ func TestV1Endpoints(t *testing.T) {
 
 				if tt.expectedStatus == http.StatusOK {
 					var res models.EchoResponse
-					json.Unmarshal(rec.Body.Bytes(), &res)
+					err := json.Unmarshal(rec.Body.Bytes(), &res)
+					assert.NoError(t, err)
 					assert.Equal(t, tt.expectedMsg, res.Message)
 					assert.NotEmpty(t, res.Timestamp)
 				}
