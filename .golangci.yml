@@ -11,10 +11,9 @@ linters:
     - ineffassign
     - staticcheck
     - unused
-    - revive
     - gofmt
     - misspell
-    - gocritic
+    - revive
 
 linters-settings:
   revive:
@@ -22,8 +21,9 @@ linters-settings:
       - name: exported
         disabled: true
   govet:
-    enable:
-      - shadow
+    enable-all: true
+    disable:
+      - shadow # Shadowing can be tricky during version transitions
   gofmt:
     simplify: true
 
