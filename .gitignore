@@ -6,7 +6,6 @@ main.exe
 
 # Dependencies
 vendor/
-go.sum
 
 # Logs
 *.log
