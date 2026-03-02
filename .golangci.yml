@@ -21,7 +21,8 @@ linters-settings:
       - name: exported
         disabled: true
   govet:
-    check-shadowing: true
+    enable:
+      - shadow
   gofmt:
     simplify: true
 
