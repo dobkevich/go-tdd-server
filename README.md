@@ -20,28 +20,32 @@ A production-ready Go server boilerplate built with **Echo**, focusing on **Clea
 ### Local Development
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/dobkevich/go-tdd-server.git
+   git clone <repository-url>
    cd go-tdd-server
    ```
 2. **Run tests (mandatory):**
    ```bash
-   go test -v ./...
+   make test
    ```
-3. **Build and run:**
+3. **Run code quality checks:**
    ```bash
-   go build -o server main.go
-   ./server
+   make lint
+   ```
+4. **Build and run:**
+   ```bash
+   make run
    ```
 
 ### Docker
 1. **Build the image:**
    ```bash
-   docker build -t go-tdd-server .
+   make docker-build
    ```
 2. **Run the container:**
    ```bash
-   docker run -p 8080:8080 go-tdd-server
+   make docker-run
    ```
+
 
 ## 📖 API Documentation
 Once the server is running, visit [http://localhost:8080/docs/](http://localhost:8080/docs/) for interactive API documentation.
