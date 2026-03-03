@@ -26,7 +26,7 @@ USER 1001
 WORKDIR /home/appuser/
 
 # Copy binary from builder stage
-COPY --from=builder /github.com/project/go-tdd-server/server .
+COPY --from=builder /app/server .
 
 # Default environment variables
 ENV PORT=8080
