@@ -17,7 +17,7 @@ COPY . .
 RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o server main.go
 
 # Run stage
-FROM alpine:3.21
+FROM alpine:3.23
 
 # Add non-root user for security
 RUN adduser -D -u 1001 appuser
