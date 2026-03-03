@@ -51,7 +51,7 @@ A production-ready Go server boilerplate built with **Echo**, focusing on **Clea
 Once the server is running, visit [http://localhost:8080/docs/](http://localhost:8080/docs/) for interactive API documentation.
 
 ## 🧪 Development Philosophy
-This project strictly follows **TDD**. Refer to [GEMINI.md](./GEMINI.md) for detailed engineering standards and contribution guidelines.
+This project strictly follows **Test Driven Development (TDD)**. Refer to [GEMINI.md](./GEMINI.md) for detailed engineering standards and contribution guidelines.
 
 ## 📄 License
 This project is licensed under the MIT License.
