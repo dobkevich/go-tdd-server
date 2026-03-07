@@ -99,14 +99,14 @@ mcp.AddTool(h.Server, &mcp.Tool{
 ## 🔐 Authentication Management (JWT/OIDC)
 
 ### How to Enable
-Set the `AUTHENTIK_JWKS_URL` environment variable to your provider's JWKS endpoint.
+Set the `JWKS_URL` environment variable to your provider's JWKS endpoint.
 ```bash
-export AUTHENTIK_JWKS_URL="https://auth.example.com/jwks"
+export JWKS_URL="https://auth.example.com/jwks"
 ```
 The middleware will automatically protect both `/api/v1/*` and `/mcp/*` routes.
 
 ### How to Disable
-Unset or leave `AUTHENTIK_JWKS_URL` empty. The server will allow all requests (useful for internal networks).
+Unset or leave `JWKS_URL` empty. The server will allow all requests (useful for internal networks).
 
 ---
 

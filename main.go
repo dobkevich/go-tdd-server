@@ -102,7 +102,7 @@ func SetupRouter() *echo.Echo {
 	}))
 
 	// JWT Authentication Middleware (Authentik integration)
-	jwksURL := os.Getenv("AUTHENTIK_JWKS_URL")
+	jwksURL := os.Getenv("JWKS_URL")
 	e.Use(handlers.JWTMiddleware(jwksURL))
 
 	appSvc := service.NewAppService()

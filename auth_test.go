@@ -47,8 +47,8 @@ func TestAuthentication(t *testing.T) {
 	defer jwksServer.Close()
 
 	// 2. Configure environment
-	_ = os.Setenv("AUTHENTIK_JWKS_URL", jwksServer.URL)
-	defer func() { _ = os.Unsetenv("AUTHENTIK_JWKS_URL") }()
+	_ = os.Setenv("JWKS_URL", jwksServer.URL)
+	defer func() { _ = os.Unsetenv("JWKS_URL") }()
 
 	router := SetupRouter()
 

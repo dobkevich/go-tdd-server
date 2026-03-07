@@ -14,7 +14,7 @@ import (
 // JWTMiddleware validates the JWT token against a JWKS endpoint (e.g., Authentik)
 func JWTMiddleware(jwksURL string) echo.MiddlewareFunc {
 	if jwksURL == "" {
-		slog.Warn("AUTHENTIK_JWKS_URL is not set. JWT authentication is disabled.")
+		slog.Warn("JWKS_URL is not set. JWT authentication is disabled.")
 		return func(next echo.HandlerFunc) echo.HandlerFunc {
 			return next
 		}

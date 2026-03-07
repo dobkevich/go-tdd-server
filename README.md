@@ -19,7 +19,7 @@ A production-ready Go server boilerplate built with **Echo**, focusing on **Clea
 |----------|-------------|---------|
 | `PORT` | Server listening port | `8080` |
 | `ENABLE_MCP` | Enable Model Context Protocol (AI tools) | `false` |
-| `AUTHENTIK_JWKS_URL` | JWKS endpoint for JWT validation (OIDC provider) | (Empty = Disabled) |
+| `JWKS_URL` | JWKS endpoint for JWT validation (OIDC provider) | (Empty = Disabled) |
 
 ## 📦 Getting Started
 
@@ -63,7 +63,7 @@ The MCP endpoint will be available at `http://localhost:8080/mcp/sse`.
 ### Enabling Authentication
 Set the JWKS URL from your OIDC provider (e.g., Authentik):
 ```bash
-export AUTHENTIK_JWKS_URL="https://your-auth-provider.com/application/o/app/jwks/"
+export JWKS_URL="https://your-auth-provider.com/application/o/app/jwks/"
 make run
 ```
 
