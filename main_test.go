@@ -133,4 +133,20 @@ func TestV1Endpoints(t *testing.T) {
 			})
 		}
 	})
+
+	t.Run("Time", func(t *testing.T) {
+		req := httptest.NewRequest(http.MethodGet, "/api/v1/time", nil)
+		rec := httptest.NewRecorder()
+		e.ServeHTTP(rec, req)
+		assert.Equal(t, http.StatusOK, rec.Code)
+		assert.Contains(t, rec.Body.String(), "time")
+	})
+
+	t.Run("Internal", func(t *testing.T) {
+		req := httptest.NewRequest(http.MethodGet, "/api/v1/internal", nil)
+		rec := httptest.NewRecorder()
+		e.ServeHTTP(rec, req)
+		assert.Equal(t, http.StatusOK, rec.Code)
+		assert.Contains(t, rec.Body.String(), "Internal data for user")
+	})
 }

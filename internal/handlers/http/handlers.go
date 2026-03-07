@@ -1,4 +1,4 @@
-package handlers
+package httphandlers
 
 import (
 	"github.com/project/go-tdd-server/internal/models"
@@ -108,4 +108,9 @@ func (h *Handler) Time(c echo.Context) error {
 	return c.JSON(http.StatusOK, models.TimeResponse{
 		Time: time.Now().UTC().Format(time.RFC3339),
 	})
+}
+
+func (h *Handler) Internal(c echo.Context) error {
+	ctx := c.Request().Context()
+	return c.String(http.StatusOK, h.AppSvc.GetInternalInfo(ctx, "internal-system"))
 }

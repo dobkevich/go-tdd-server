@@ -43,3 +43,77 @@ This project is a high-quality template for Go applications using TDD (Test Driv
 - `make build` — compile the production binary.
 - `make run` — build and start the server locally.
 - `make docker-build` — build the production Docker image.
+
+---
+
+# 🛠 How-To: Adding New Functionality (REST + MCP)
+
+Follow these steps to add a new endpoint and its MCP tool companion.
+
+## Step 1: Define Business Logic (Service Layer)
+Add the method to the `AppService` interface in `internal/service/app.go` and implement it.
+```go
+// internal/service/app.go
+type AppService interface {
+    Multiply(ctx context.Context, a, b int) int
+}
+```
+
+## Step 2: Create HTTP Handler (REST)
+Create a handler in `internal/handlers/http/handlers.go` and write a test in `main_test.go`.
+```go
+// internal/handlers/http/handlers.go
+func (h *Handler) Multiply(c echo.Context) error {
+    // 1. Bind & Validate input
+    // 2. Call h.AppSvc.Multiply
+    // 3. Return JSON response
+}
+```
+Register it in `main.go`: `api.GET("/multiply", h.Multiply)`.
+
+## Step 3: Create MCP Tool Companion (AI)
+If the feature should be available to AI agents, register it in `internal/handlers/mcp/handlers.go`.
+```go
+// internal/handlers/mcp/handlers.go
+
+// 1. Define typed arguments with descriptions for LLM
+type MultiplyArgs struct {
+    A int `json:"a" jsonschema:"First number"`
+    B int `json:"b" jsonschema:"Second number"`
+}
+
+// 2. Register the tool in registerTools()
+mcp.AddTool(h.Server, &mcp.Tool{
+    Name:        "multiply",
+    Description: "Multiplies two numbers. Use this for math.",
+}, func(ctx context.Context, req *mcp.CallToolRequest, args MultiplyArgs) (*mcp.CallToolResult, any, error) {
+    res := h.AppSvc.Multiply(ctx, args.A, args.B)
+    return &mcp.CallToolResult{
+        Content: []mcp.Content{&mcp.TextContent{Text: fmt.Sprint(res)}},
+    }, nil, nil
+})
+```
+
+---
+
+## 🔐 Authentication Management (JWT/OIDC)
+
+### How to Enable
+Set the `AUTHENTIK_JWKS_URL` environment variable to your provider's JWKS endpoint.
+```bash
+export AUTHENTIK_JWKS_URL="https://auth.example.com/jwks"
+```
+The middleware will automatically protect both `/api/v1/*` and `/mcp/*` routes.
+
+### How to Disable
+Unset or leave `AUTHENTIK_JWKS_URL` empty. The server will allow all requests (useful for internal networks).
+
+---
+
+## 🤖 MCP (AI Tools) Management
+
+### How to Enable
+Set `ENABLE_MCP=true`. This will initialize the MCP Server and open the `/mcp/sse` endpoint.
+
+### Internal-Only Features
+To keep a feature internal (not visible to AI), simply **do not** add it to `internal/handlers/mcp/handlers.go`. It will remain a standard REST-only endpoint.

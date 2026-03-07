@@ -7,16 +7,16 @@ help: ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-15s\033[0m %s\n", $$1, $$2}'
 
 build: ## Build the binary
-	go build -v -o $(BINARY_NAME) main.go
+	go build -buildvcs=false -v -o $(BINARY_NAME) main.go
 
 test: ## Run tests
-	go test -v -race ./...
+	go test -buildvcs=false -v -race ./...
 
 run: build ## Build and run the binary
 	./$(BINARY_NAME)
 
 lint: ## Run golangci-lint
-	golangci-lint run ./...
+	GOFLAGS="-buildvcs=false" golangci-lint run ./...
 
 clean: ## Remove binary and logs
 	rm -f $(BINARY_NAME)

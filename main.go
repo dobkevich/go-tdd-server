@@ -14,6 +14,8 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/project/go-tdd-server/internal/handlers"
+	httphandlers "github.com/project/go-tdd-server/internal/handlers/http"
+	mcphandlers "github.com/project/go-tdd-server/internal/handlers/mcp"
 	"github.com/project/go-tdd-server/internal/service"
 	_ "go.uber.org/automaxprocs"
 )
@@ -22,7 +24,7 @@ import (
 var docsContents embed.FS
 
 const defaultPort = "8080"
-const appVersion = "1.1.0"
+const appVersion = "0.0.2"
 
 type CustomValidator struct {
 	validator *validator.Validate
@@ -50,7 +52,7 @@ func main() {
 		Addr:         ":" + port,
 		Handler:      e,
 		ReadTimeout:  10 * time.Second,
-		WriteTimeout: 10 * time.Second,
+		WriteTimeout: 0, // Disable write timeout for SSE
 		IdleTimeout:  120 * time.Second,
 	}
 
@@ -99,9 +101,14 @@ func SetupRouter() *echo.Echo {
 		},
 	}))
 
-	appSvc := service.NewAppService()
-	h := handlers.NewHandler(appSvc, appVersion)
+	// JWT Authentication Middleware (Authentik integration)
+	jwksURL := os.Getenv("AUTHENTIK_JWKS_URL")
+	e.Use(handlers.JWTMiddleware(jwksURL))
 
+	appSvc := service.NewAppService()
+
+	// HTTP handlers (Mandatory)
+	h := httphandlers.NewHandler(appSvc, appVersion)
 	e.GET("/healthz", h.Healthz)
 	e.GET("/readyz", h.Readyz)
 
@@ -112,6 +119,14 @@ func SetupRouter() *echo.Echo {
 	api.GET("/add", h.Add)
 	api.POST("/echo", h.Echo)
 	api.GET("/time", h.Time)
+	api.GET("/internal", h.Internal)
+
+	// MCP handlers (Optional)
+	if os.Getenv("ENABLE_MCP") == "true" {
+		slog.Info("MCP transport is enabled")
+		mcpH := mcphandlers.NewMCPHandler(appSvc)
+		mcpH.RegisterRoutes(e)
+	}
 
 	e.StaticFS("/docs/", echo.MustSubFS(docsContents, "docs"))
 	e.GET("/", func(c echo.Context) error {

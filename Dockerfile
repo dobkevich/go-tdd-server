@@ -1,8 +1,10 @@
 # Build stage
-FROM golang:1.24-alpine AS builder
+FROM golang:1.24 AS builder
 
 # Install necessary system dependencies
-RUN apk add --no-cache git
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    git \
+    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
