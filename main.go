@@ -113,12 +113,9 @@ func SetupRouter() *echo.Echo {
 	e.GET("/readyz", h.Readyz)
 
 	api := e.Group("/api/v1")
-	api.GET("/ping", h.Ping)
 	api.GET("/hello/:name", h.Hello)
-	api.GET("/status", h.Status)
 	api.GET("/add", h.Add)
 	api.POST("/echo", h.Echo)
-	api.GET("/time", h.Time)
 	api.GET("/internal", h.Internal)
 
 	// MCP handlers (Optional)

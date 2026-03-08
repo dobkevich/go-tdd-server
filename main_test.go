@@ -25,6 +25,7 @@ func TestHealth(t *testing.T) {
 		err := json.Unmarshal(rec.Body.Bytes(), &res)
 		assert.NoError(t, err)
 		assert.Equal(t, "ok", res.Status)
+		assert.NotEmpty(t, res.Version)
 		assert.NotEmpty(t, res.Timestamp)
 		assert.NotEmpty(t, res.Uptime)
 	})
@@ -35,23 +36,16 @@ func TestHealth(t *testing.T) {
 		e.ServeHTTP(rec, req)
 		assert.Equal(t, http.StatusOK, rec.Code)
 
-		var res models.HealthResponse
+		var res models.ReadyResponse
 		err := json.Unmarshal(rec.Body.Bytes(), &res)
 		assert.NoError(t, err)
 		assert.Equal(t, "ready", res.Status)
+		assert.NotEmpty(t, res.Version)
 	})
 }
 
 func TestV1Endpoints(t *testing.T) {
 	e := SetupRouter()
-
-	t.Run("Ping", func(t *testing.T) {
-		req := httptest.NewRequest(http.MethodGet, "/api/v1/ping", nil)
-		rec := httptest.NewRecorder()
-		e.ServeHTTP(rec, req)
-		assert.Equal(t, http.StatusOK, rec.Code)
-		assert.Equal(t, "pong", rec.Body.String())
-	})
 
 	t.Run("Add", func(t *testing.T) {
 		tests := []struct {
@@ -132,14 +126,6 @@ func TestV1Endpoints(t *testing.T) {
 				}
 			})
 		}
-	})
-
-	t.Run("Time", func(t *testing.T) {
-		req := httptest.NewRequest(http.MethodGet, "/api/v1/time", nil)
-		rec := httptest.NewRecorder()
-		e.ServeHTTP(rec, req)
-		assert.Equal(t, http.StatusOK, rec.Code)
-		assert.Contains(t, rec.Body.String(), "time")
 	})
 
 	t.Run("Internal", func(t *testing.T) {

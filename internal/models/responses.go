@@ -22,15 +22,6 @@ type HelloResponse struct {
 	Message string `json:"message"`
 }
 
-type StatusResponse struct {
-	Status  string `json:"status"`
-	Version string `json:"version"`
-}
-
-type TimeResponse struct {
-	Time string `json:"time"`
-}
-
 type ErrorResponse struct {
 	Error   string `json:"error"`
 	Message string `json:"message,omitempty"`
@@ -38,6 +29,12 @@ type ErrorResponse struct {
 
 type HealthResponse struct {
 	Status    string `json:"status"`
+	Version   string `json:"version,omitempty"`
 	Timestamp string `json:"timestamp,omitempty"`
 	Uptime    string `json:"uptime,omitempty"`
+}
+
+type ReadyResponse struct {
+	Status  string `json:"status"`
+	Version string `json:"version,omitempty"`
 }

@@ -28,6 +28,7 @@ func (h *Handler) Healthz(c echo.Context) error {
 	uptime := time.Since(h.StartTime).Truncate(time.Second).String()
 	return c.JSON(http.StatusOK, models.HealthResponse{
 		Status:    "ok",
+		Version:   h.Version,
 		Timestamp: time.Now().UTC().Format(time.RFC3339),
 		Uptime:    uptime,
 	})
@@ -35,24 +36,16 @@ func (h *Handler) Healthz(c echo.Context) error {
 
 func (h *Handler) Readyz(c echo.Context) error {
 	// Add health checks for external dependencies (e.g., DB connection) here
-	return c.JSON(http.StatusOK, models.HealthResponse{Status: "ready"})
+	return c.JSON(http.StatusOK, models.ReadyResponse{
+		Status:  "ready",
+		Version: h.Version,
+	})
 }
 
 // API methods
-func (h *Handler) Ping(c echo.Context) error {
-	return c.String(http.StatusOK, "pong")
-}
-
 func (h *Handler) Hello(c echo.Context) error {
 	name := c.Param("name")
 	return c.JSON(http.StatusOK, models.HelloResponse{Message: "Hello, " + name})
-}
-
-func (h *Handler) Status(c echo.Context) error {
-	return c.JSON(http.StatusOK, models.StatusResponse{
-		Status:  "running",
-		Version: h.Version,
-	})
 }
 
 func (h *Handler) Add(c echo.Context) error {
@@ -101,12 +94,6 @@ func (h *Handler) Echo(c echo.Context) error {
 	return c.JSON(http.StatusOK, models.EchoResponse{
 		Message:   processed,
 		Timestamp: time.Now().UTC().Format(time.RFC3339),
-	})
-}
-
-func (h *Handler) Time(c echo.Context) error {
-	return c.JSON(http.StatusOK, models.TimeResponse{
-		Time: time.Now().UTC().Format(time.RFC3339),
 	})
 }
 

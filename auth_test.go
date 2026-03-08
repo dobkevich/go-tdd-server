@@ -61,7 +61,7 @@ func TestAuthentication(t *testing.T) {
 	})
 
 	t.Run("API call without token should return 401", func(t *testing.T) {
-		req := httptest.NewRequest(http.MethodGet, "/api/v1/ping", nil)
+		req := httptest.NewRequest(http.MethodGet, "/api/v1/hello/test", nil)
 		rec := httptest.NewRecorder()
 		router.ServeHTTP(rec, req)
 		assert.Equal(t, http.StatusUnauthorized, rec.Code)
@@ -77,17 +77,17 @@ func TestAuthentication(t *testing.T) {
 		tokenStr, err := token.SignedString(privateKey)
 		require.NoError(t, err)
 
-		req := httptest.NewRequest(http.MethodGet, "/api/v1/ping", nil)
+		req := httptest.NewRequest(http.MethodGet, "/api/v1/hello/test", nil)
 		req.Header.Set("Authorization", "Bearer "+tokenStr)
 		rec := httptest.NewRecorder()
 		router.ServeHTTP(rec, req)
 
 		assert.Equal(t, http.StatusOK, rec.Code)
-		assert.Equal(t, "pong", rec.Body.String())
+		assert.Contains(t, rec.Body.String(), "Hello, test")
 	})
 
 	t.Run("API call with invalid token should return 401", func(t *testing.T) {
-		req := httptest.NewRequest(http.MethodGet, "/api/v1/ping", nil)
+		req := httptest.NewRequest(http.MethodGet, "/api/v1/hello/test", nil)
 		req.Header.Set("Authorization", "Bearer invalid-token")
 		rec := httptest.NewRecorder()
 		router.ServeHTTP(rec, req)
