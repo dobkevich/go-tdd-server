@@ -54,11 +54,23 @@ func TestMCPModularity(t *testing.T) {
 		initPayload := `{"jsonrpc":"2.0","method":"initialize","params":{"protocolVersion":"2024-11-05","capabilities":{},"clientInfo":{"name":"test","version":"1.0"}},"id":1}`
 		_, _ = http.Post(ts.URL+"/mcp/sse?sessionid="+sessionID, "application/json", strings.NewReader(initPayload))
 
-		// Skip initialize response
-		for scanner.Scan() {
-			if strings.Contains(scanner.Text(), `"result":`) {
-				break
+		// Skip initialize response with timeout
+		initDone := make(chan bool, 1)
+		go func() {
+			for scanner.Scan() {
+				if strings.Contains(scanner.Text(), `"result":`) {
+					initDone <- true
+					return
+				}
 			}
+			initDone <- false
+		}()
+
+		select {
+		case <-initDone:
+			// Success
+		case <-time.After(2 * time.Second):
+			t.Fatal("Timeout waiting for MCP init response")
 		}
 
 		// 3. Call Echo Tool

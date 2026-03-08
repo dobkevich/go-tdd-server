@@ -94,9 +94,30 @@ func TestAuthentication(t *testing.T) {
 		assert.Equal(t, http.StatusUnauthorized, rec.Code)
 	})
 
-	t.Run("MCP call without token should return 200 (bypass auth)", func(t *testing.T) {
+	t.Run("MCP call without token should return 401 (protected)", func(t *testing.T) {
 		_ = os.Setenv("ENABLE_MCP", "true")
 		defer func() { _ = os.Unsetenv("ENABLE_MCP") }()
+
+		router := SetupRouter()
+		req := httptest.NewRequest(http.MethodGet, "/mcp/sse", nil)
+		rec := httptest.NewRecorder()
+		router.ServeHTTP(rec, req)
+
+		assert.Equal(t, http.StatusUnauthorized, rec.Code)
+	})
+
+	t.Run("MCP call with valid token should return 200", func(t *testing.T) {
+		_ = os.Setenv("ENABLE_MCP", "true")
+		defer func() { _ = os.Unsetenv("ENABLE_MCP") }()
+
+		// Generate valid token
+		token := jwt.NewWithClaims(jwt.SigningMethodRS256, jwt.MapClaims{
+			"sub": "user-123",
+			"exp": time.Now().Add(time.Hour).Unix(),
+		})
+		token.Header["kid"] = "test-key-id"
+		tokenStr, err := token.SignedString(privateKey)
+		require.NoError(t, err)
 
 		router := SetupRouter()
 		ts := httptest.NewServer(router)
@@ -106,9 +127,12 @@ func TestAuthentication(t *testing.T) {
 			Timeout: 500 * time.Millisecond,
 		}
 
-		resp, err := client.Get(ts.URL + "/mcp/sse")
+		req, _ := http.NewRequest(http.MethodGet, ts.URL+"/mcp/sse", nil)
+		req.Header.Set("Authorization", "Bearer "+tokenStr)
+		
+		resp, err := client.Do(req)
 		if err != nil {
-			// Timeout is expected for SSE
+			// Timeout is expected for SSE, but we should check if we got headers
 			return
 		}
 		defer func() { _ = resp.Body.Close() }()

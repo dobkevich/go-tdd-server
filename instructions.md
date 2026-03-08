@@ -105,6 +105,20 @@ export JWKS_URL="https://auth.example.com/jwks"
 ```
 The middleware will automatically protect both `/api/v1/*` and `/mcp/*` routes.
 
+### Client Configuration (MCP)
+To connect a protected agent (like Gemini CLI), you must provide the JWT token in the headers. Update your `.gemini/settings.json`:
+```json
+"mcpServers": {
+  "go-tdd-server": {
+    "url": "http://localhost:8080/mcp/sse",
+    "type": "sse",
+    "headers": {
+      "Authorization": "Bearer YOUR_JWT_TOKEN"
+    }
+  }
+}
+```
+
 ### How to Disable
 Unset or leave `JWKS_URL` empty. The server will allow all requests (useful for internal networks).
 

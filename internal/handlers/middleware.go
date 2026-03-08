@@ -31,9 +31,9 @@ func JWTMiddleware(jwksURL string) echo.MiddlewareFunc {
 
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
-			// Skip auth for health checks, ready checks, root, docs, and MCP SSE
+			// Skip auth for health checks, ready checks, root, and docs
 			path := c.Path()
-			if path == "/healthz" || path == "/readyz" || path == "/" || strings.HasPrefix(path, "/docs") || strings.HasPrefix(path, "/mcp/sse") {
+			if path == "/healthz" || path == "/readyz" || path == "/" || strings.HasPrefix(path, "/docs") {
 				return next(c)
 			}
 
