@@ -129,7 +129,7 @@ func TestAuthentication(t *testing.T) {
 
 		req, _ := http.NewRequest(http.MethodGet, ts.URL+"/mcp/sse", nil)
 		req.Header.Set("Authorization", "Bearer "+tokenStr)
-		
+
 		resp, err := client.Do(req)
 		if err != nil {
 			// Timeout is expected for SSE, but we should check if we got headers
