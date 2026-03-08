@@ -16,3 +16,6 @@ vendor/
 # IDE
 .vscode/
 .idea/
+
+# Agents
+.gemini/

@@ -1,8 +1,0 @@
-{
-  "mcpServers": {
-    "go-tdd-server": {
-      "url": "http://localhost:8080/mcp/sse",
-      "type": "sse"
-    }
-  }
-}
