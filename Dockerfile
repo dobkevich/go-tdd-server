@@ -15,6 +15,9 @@ RUN go mod download
 # Copy source code
 COPY . .
 
+# Run unit tests
+RUN go test -v -race ./...
+
 # Build optimized binary
 RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o server main.go
 
