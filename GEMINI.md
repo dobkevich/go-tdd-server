@@ -7,6 +7,8 @@ After completing a task that involves file changes, always provide a draft commi
 - **Scope**: The file or component affected (e.g., `(Dockerfile)`, `(handlers)`).
 - **Body**: Include a more detailed description of the changes below the subject line.
 
+Provide a draft commit message ONLY after completing a Directive that resulted in actual file modifications. NEVER provide a commit message for Inquiries or if no files were changed, unless explicitly asked to provide it.
+
 ---
 
 ## 🚀 Correct Server Startup (Background with MCP)
