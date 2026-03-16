@@ -1,1 +1,1 @@
-/home/z/Files/GeminiCLI/go-tdd-server/GEMINI.md
+GEMINI.md
